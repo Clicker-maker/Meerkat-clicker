@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meerkat Clicker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f0e7db;
+            font-family: Arial, sans-serif;
+        }
+        #meerkat-img {
+            transition: transform 0.1s;
+        }
+        #meerkat-img:hover {
+            transform: scale(1.1);
+        }
+        #meerkat-img:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen text-center">
+    <h1 class="text-4xl font-bold text-gray-800 mb-4">Meerkat Clicker</h1>
+    <p class="text-xl text-gray-600 mb-4">Clicks: <span id="click-count">0</span></p>
+    <p class="text-lg text-gray-600 mb-4">Clicks per Second: <span id="cps">0</span></p>
+    <p class="text-lg text-gray-600 mb-4">Clicks per Click: <span id="click-power">1</span></p>
+    
+    <img id="meerkat-img" src="https://images.creativemarket.com/0.1.0/ps/1136645/1360/1813/m1/fpnw/wm1/qmzuynkc4xugqsohvpckc0y3hux6ynu4l92sixi3hfi4fwqxn7va1y1btx73xnt7-.jpg?1459441006&s=44d768a56cba7565cf1c5a7afa24fe3f" alt="Meerkat" class="cursor-pointer mb-6 rounded-full shadow-lg w-48 h-48 object-cover">
+    
+    <div class="flex flex-col items-center">
+        <button id="upgrade-btn" class="bg-green-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-green-600 disabled:bg-gray-400" disabled>
+            Buy Auto-Clicker (Cost: <span id="upgrade-cost">10</span> Clicks)
+        </button>
+        <p class="text-sm text-gray-500 mb-4">Auto-Clickers Owned: <span id="auto-clickers">0</span></p>
+        
+        <button id="click-power-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-blue-600 disabled:bg-gray-400" disabled>
+            Buy Click Power (Cost: <span id="click-power-cost">9</span> Clicks)
+        </button>
+        <p class="text-sm text-gray-500">Click Power Upgrades: <span id="click-power-upgrades">0</span></p>
+    </div>
+
+    <script>
+        let clicks = 0;
+        let autoClickers = 0;
+        let clickPowerUpgrades = 0;
+        let upgradeCost = 10;
+        let clickPowerCost = 9;
+        let clickPower = 1;
+        const meerkatImg = document.getElementById('meerkat-img');
+        const clickCount = document.getElementById('click-count');
+        const cpsDisplay = document.getElementById('cps');
+        const clickPowerDisplay = document.getElementById('click-power');
+        const upgradeBtn = document.getElementById('upgrade-btn');
+        const upgradeCostDisplay = document.getElementById('upgrade-cost');
+        const autoClickersDisplay = document.getElementById('auto-clickers');
+        const clickPowerBtn = document.getElementById('click-power-btn');
+        const clickPowerCostDisplay = document.getElementById('click-power-cost');
+        const clickPowerUpgradesDisplay = document.getElementById('click-power-upgrades');
+
+        // Click meerkat to gain clicks
+        meerkatImg.addEventListener('click', () => {
+            clicks += clickPower;
+            updateDisplay();
+        });
+
+        // Auto-clicker upgrade button
+        upgradeBtn.addEventListener('click', () => {
+            if (clicks >= upgradeCost) {
+                clicks -= upgradeCost;
+                autoClickers += 1;
+                upgradeCost = Math.round(upgradeCost * 1.5); // Increase cost
+                updateDisplay();
+            }
+        });
+
+        // Click power upgrade button
+        clickPowerBtn.addEventListener('click', () => {
+            if (clicks >= clickPowerCost) {
+                clicks -= clickPowerCost;
+                clickPowerUpgrades += 1;
+                clickPower += 1; // Increase clicks per click
+                clickPowerCost = Math.round(clickPowerCost * 1.5); // Increase cost
+                updateDisplay();
+            }
+        });
+
+        // Auto-clicker logic
+        setInterval(() => {
+            clicks += autoClickers * 0.1; // 0.1 clicks per auto-clicker per second
+            updateDisplay();
+        }, 100);
+
+        // Update display
+        function updateDisplay() {
+            clickCount.textContent = Math.floor(clicks);
+            cpsDisplay.textContent = (autoClickers * 0.1 * 10).toFixed(1); // Clicks per second
+            clickPowerDisplay.textContent = clickPower;
+            upgradeCostDisplay.textContent = upgradeCost;
+            autoClickersDisplay.textContent = autoClickers;
+            clickPowerCostDisplay.textContent = clickPowerCost;
+            clickPowerUpgradesDisplay.textContent = clickPowerUpgrades;
+            upgradeBtn.disabled = clicks < upgradeCost;
+            clickPowerBtn.disabled = clicks < clickPowerCost;
+        }
+    </script>
+</body>
+</html>
